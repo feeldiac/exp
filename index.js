@@ -3,6 +3,8 @@ const routerApi = require('./routes');
 const app = express();
 const port = 3000;
 
+app.use(express.json());
+
 /*
 Some definitions:
 
@@ -16,19 +18,10 @@ Create modular, mountable route handlers. A Router instance is a complete middle
 */
 
 //This is a built-in middleware function in Express. It parses incoming requests with JSON payloads and is based on body-parser.
-app.use(express.json());
 
 app.get('/', (req, res) => {
   res.send('Hello from my first server.');
 });
-
-// app.get('/categories/:categoryId/products/:productId', (req, res) => {
-//   const {categoryId, productId} = req.params;
-//   res.json({
-//     categoryId,
-//     productId,
-//   });
-// });
 
 routerApi(app);
 

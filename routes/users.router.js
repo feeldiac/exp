@@ -1,20 +1,24 @@
 const express = require('express');
 const router = express.Router();
-const { faker } = require('@faker-js/faker');
+const UserService = require('./../services/user.service');
+
+const service = new UserService();
 
 //GET
 router.get('/', (req, res) => {
-  const { size } = req.query; //capture query param
-  const users = [];
-  const limit = size || 50;
-
-  for (let i = 0; i < limit; i++) {
-    users.push({
-      name: faker.name.findName(),
-      age: Math.round(Math.random() * 70),
-    });
-  }
+  const users = service.find();
   res.json(users);
+});
+
+router.get('/:id', (req, res) => {
+  const { id } = req.params;
+  const user = service.findOne(id);
+
+  if (user) {
+    res.status(200).json(user);
+  } else {
+    res.status(404).json({ message: 'User not found' });
+  }
 });
 
 //POST
