@@ -34,10 +34,8 @@ router.get('/:id', (req, res) => {
 router.post('/', (req, res) => {
   //Return the body of the message as response
   const body = req.body;
-  res.status(201).json({
-    message: 'Created',
-    data: body,
-  });
+  const newProduct = service.create(body);
+  res.status(201).json(newProduct);
 });
 
 //PATCH
@@ -45,20 +43,15 @@ router.patch('/:id', (req, res) => {
   //Partial update. Use patch over put
   const { id } = req.params;
   const body = req.body;
-  res.json({
-    message: 'Updated',
-    data: body,
-    id,
-  });
+  const product = service.update(id, body);
+  res.json(product);
 });
 
 //DELETE
 router.delete('/:id', (req, res) => {
   const { id } = req.params;
-  res.json({
-    message: 'Deleted',
-    id,
-  });
+  const rta = service.delete(id);
+  res.json(rta);
 });
 
 module.exports = router;
