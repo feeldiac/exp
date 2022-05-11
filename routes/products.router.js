@@ -39,7 +39,7 @@ router.post('/', async (req, res) => {
 });
 
 //PATCH
-router.patch('/:id', async (req, res) => {
+router.patch('/:id', async (req, res, next) => {
   //Partial update. Use patch over put
   try {
     const { id } = req.params;
@@ -47,9 +47,7 @@ router.patch('/:id', async (req, res) => {
     const product = await service.update(id, body);
     res.json(product);
   } catch (error) {
-    res.status(404).json({
-      message: error.message
-    })
+    next(error);
   }
 });
 
