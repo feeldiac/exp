@@ -1,5 +1,7 @@
 const express = require('express');
 const routerApi = require('./routes');
+const { logErrors, errorHandler } = require('./middleware/error.handler')
+
 const app = express();
 const port = 3000;
 
@@ -24,6 +26,10 @@ app.get('/', (req, res) => {
 });
 
 routerApi(app);
+
+//Mount the error middlewares for every request
+app.use(logErrors);
+app.use(errorHandler);
 
 app.listen(port, () => {
   console.log(`My port: ${port}`);
