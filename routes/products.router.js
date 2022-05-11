@@ -4,6 +4,10 @@ Routes related to products
 
 const express = require('express');
 const ProductService = require('./../services/product.service');
+const validatorHandler = require('./../middleware/validator.handler');
+const {createProductSchema, updateProductSchema, getProductSchema } = require('./../schemas/product.schema')
+
+
 const router = express.Router();
 
 const service = new ProductService();
@@ -19,7 +23,9 @@ router.get('/', async (req, res) => {
   res.json(products);
 });
 
-router.get('/:id', async (req, res, next) => {
+router.get('/:id', 
+  validatorHandler(getProductSchema, 'params'),
+  async (req, res, next) => {
   try {
     const { id } = req.params;
     const product = await service.findOne(id);
@@ -31,16 +37,19 @@ router.get('/:id', async (req, res, next) => {
 });
 
 //POST
-router.post('/', async (req, res) => {
-  //Return the body of the message as response
+router.post('/', 
+  validatorHandler(createProductSchema, 'body'),
+  async (req, res) => {
   const body = req.body;
   const newProduct = await service.create(body);
   res.status(201).json(newProduct);
 });
 
 //PATCH
-router.patch('/:id', async (req, res, next) => {
-  //Partial update. Use patch over put
+router.patch('/:id', 
+  validatorHandler(getProductSchema, 'params'),
+  validatorHandler(updateProductSchema, 'body'),
+  async (req, res, next) => {
   try {
     const { id } = req.params;
     const body = req.body;
@@ -52,15 +61,15 @@ router.patch('/:id', async (req, res, next) => {
 });
 
 //DELETE
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', 
+  validatorHandler(getProductSchema, 'params'),
+  async (req, res, next) => {
   try {
     const { id } = req.params;
     const rta = await service.delete(id);
     res.json(rta);
   } catch (error) {
-    res.status(404).json({
-      message: error.message
-    })
+    next(error);
   }
 });
 
